@@ -1,0 +1,55 @@
+ORG 0400H
+  String DB "Happy Diwali"
+
+MOV A,#38H
+ACALL CMD
+
+MOV A,#0FH
+ACALL CMD
+
+MOV A,#01H
+ACALL CMD
+
+MOV A,#06H
+ACALL CMD
+
+MOV A,#80H
+ACALL CMD
+
+MOV DPTR,#0400H
+MOV R7,#0CH
+MOV R6,#00H
+
+DISPLAY: MOV A,R6
+         MOVC A,@A+DPTR
+         ACALL SHOW
+         INC R6
+         DJNZ R7,DISPLAY
+HERE: SJMP HERE
+
+SHOW:MOV P2,A
+     SETB P1.0
+     CLR P1.1
+     SETB P1.2
+     CLR P1.2
+     ACALL DELAY
+     RET
+
+CMD:MOV P2,A
+    CLR P1.0
+    CLR P1.1
+    SETB P1.2
+    CLR P1.2
+    ACALL DELAY
+    RET
+
+DELAY:MOV TMOD,#01H
+      MOV TL0,#0F0H
+      MOV TH0,#0D8H
+      MOV TCON,#10H
+      WAIT:JNB TF0,WAIT
+      CLR TR0
+      CLR TF0
+      RET
+
+END
